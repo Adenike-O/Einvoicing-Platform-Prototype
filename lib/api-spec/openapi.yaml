@@ -1,15 +1,22 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: FIRS E-Invoicing Platform API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: business
+    description: Business profile operations
+  - name: customers
+    description: Customer management operations
+  - name: invoices
+    description: Invoice operations
 paths:
   /healthz:
     get:
@@ -24,6 +31,363 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout user
+      responses:
+        "200":
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageResponse"
+
+  /business/profile:
+    get:
+      operationId: getBusinessProfile
+      tags: [business]
+      summary: Get business profile
+      responses:
+        "200":
+          description: Business profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessProfile"
+        "404":
+          description: No profile found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    post:
+      operationId: createOrUpdateBusinessProfile
+      tags: [business]
+      summary: Create or update business profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BusinessProfileRequest"
+      responses:
+        "200":
+          description: Profile saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BusinessProfile"
+
+  /business/firs-connect:
+    post:
+      operationId: connectFirs
+      tags: [business]
+      summary: Connect to FIRS API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FirsConnectRequest"
+      responses:
+        "200":
+          description: FIRS connection result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FirsConnectResponse"
+
+  /business/subscription:
+    post:
+      operationId: selectSubscription
+      tags: [business]
+      summary: Select a subscription plan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubscriptionRequest"
+      responses:
+        "200":
+          description: Subscription activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubscriptionResponse"
+
+  /customers:
+    get:
+      operationId: listCustomers
+      tags: [customers]
+      summary: List all customers
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+    post:
+      operationId: createCustomer
+      tags: [customers]
+      summary: Create a new customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerRequest"
+      responses:
+        "201":
+          description: Customer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  /customers/{id}:
+    get:
+      operationId: getCustomer
+      tags: [customers]
+      summary: Get customer by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Customer details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          description: Customer not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /customers/tin/{tin}:
+    get:
+      operationId: lookupCustomerByTin
+      tags: [customers]
+      summary: Look up customer by TIN (simulates FIRS lookup)
+      parameters:
+        - name: tin
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Customer data from TIN lookup
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TinLookupResponse"
+
+  /invoices:
+    get:
+      operationId: listInvoices
+      tags: [invoices]
+      summary: List all invoices
+      responses:
+        "200":
+          description: List of invoices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invoice"
+    post:
+      operationId: createInvoice
+      tags: [invoices]
+      summary: Create a new invoice (draft)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceRequest"
+      responses:
+        "201":
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+
+  /invoices/{id}:
+    get:
+      operationId: getInvoice
+      tags: [invoices]
+      summary: Get invoice by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Invoice details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateInvoice
+      tags: [invoices]
+      summary: Update an invoice
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InvoiceRequest"
+      responses:
+        "200":
+          description: Invoice updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+
+  /invoices/{id}/submit:
+    post:
+      operationId: submitInvoice
+      tags: [invoices]
+      summary: Submit invoice to FIRS
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Submission result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmissionResponse"
+
+  /invoices/{id}/validate:
+    post:
+      operationId: validateInvoice
+      tags: [invoices]
+      summary: Validate invoice before submission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +398,458 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required:
+        - error
+
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+
+    RegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        fullName:
+          type: string
+      required:
+        - email
+        - password
+        - fullName
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        fullName:
+          type: string
+        onboardingComplete:
+          type: boolean
+        subscriptionPlan:
+          type: string
+          nullable: true
+      required:
+        - id
+        - email
+        - fullName
+        - onboardingComplete
+
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: "#/components/schemas/User"
+        message:
+          type: string
+      required:
+        - user
+        - message
+
+    BusinessProfileRequest:
+      type: object
+      properties:
+        companyName:
+          type: string
+        tin:
+          type: string
+        registeredAddress:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+      required:
+        - companyName
+        - tin
+        - registeredAddress
+        - contactEmail
+        - contactPhone
+
+    BusinessProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        companyName:
+          type: string
+        tin:
+          type: string
+        registeredAddress:
+          type: string
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+        firsConnected:
+          type: boolean
+        firsApiKey:
+          type: string
+          nullable: true
+        subscriptionPlan:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - companyName
+        - tin
+        - registeredAddress
+        - contactEmail
+        - contactPhone
+        - firsConnected
+
+    FirsConnectRequest:
+      type: object
+      properties:
+        apiKey:
+          type: string
+        taxOfficeCode:
+          type: string
+      required:
+        - apiKey
+        - taxOfficeCode
+
+    FirsConnectResponse:
+      type: object
+      properties:
+        connected:
+          type: boolean
+        message:
+          type: string
+        taxOfficeName:
+          type: string
+          nullable: true
+      required:
+        - connected
+        - message
+
+    SubscriptionRequest:
+      type: object
+      properties:
+        plan:
+          type: string
+          enum: [basic, enterprise]
+      required:
+        - plan
+
+    SubscriptionResponse:
+      type: object
+      properties:
+        plan:
+          type: string
+        activatedAt:
+          type: string
+          format: date-time
+        message:
+          type: string
+      required:
+        - plan
+        - activatedAt
+        - message
+
+    CustomerRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        tin:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        address:
+          type: string
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+      required:
+        - name
+        - tin
+        - address
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        name:
+          type: string
+        tin:
+          type: string
+        email:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        address:
+          type: string
+        city:
+          type: string
+          nullable: true
+        state:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - name
+        - tin
+        - address
+
+    TinLookupResponse:
+      type: object
+      properties:
+        found:
+          type: boolean
+        tin:
+          type: string
+        name:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        registrationStatus:
+          type: string
+          nullable: true
+      required:
+        - found
+        - tin
+
+    LineItem:
+      type: object
+      properties:
+        description:
+          type: string
+        quantity:
+          type: number
+        unitPrice:
+          type: number
+        vatRate:
+          type: number
+        amount:
+          type: number
+      required:
+        - description
+        - quantity
+        - unitPrice
+        - vatRate
+        - amount
+
+    InvoiceRequest:
+      type: object
+      properties:
+        customerId:
+          type: integer
+        invoiceNumber:
+          type: string
+        invoiceDate:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+          nullable: true
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineItem"
+        subtotal:
+          type: number
+        vatAmount:
+          type: number
+        totalAmount:
+          type: number
+        currency:
+          type: string
+          default: NGN
+        notes:
+          type: string
+          nullable: true
+      required:
+        - customerId
+        - invoiceNumber
+        - invoiceDate
+        - lineItems
+        - subtotal
+        - vatAmount
+        - totalAmount
+
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        customerId:
+          type: integer
+        customer:
+          $ref: "#/components/schemas/Customer"
+          nullable: true
+        invoiceNumber:
+          type: string
+        invoiceDate:
+          type: string
+        dueDate:
+          type: string
+          nullable: true
+        lineItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/LineItem"
+        subtotal:
+          type: number
+        vatAmount:
+          type: number
+        totalAmount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [draft, pending, accepted, rejected]
+        firsReferenceId:
+          type: string
+          nullable: true
+        rejectionReasons:
+          type: array
+          items:
+            type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        submittedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - userId
+        - customerId
+        - invoiceNumber
+        - invoiceDate
+        - lineItems
+        - subtotal
+        - vatAmount
+        - totalAmount
+        - currency
+        - status
+
+    ValidationResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+        errors:
+          type: array
+          items:
+            $ref: "#/components/schemas/ValidationError"
+      required:
+        - valid
+        - errors
+
+    ValidationError:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          type: string
+        code:
+          type: string
+      required:
+        - field
+        - message
+        - code
+
+    SubmissionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        status:
+          type: string
+          enum: [accepted, rejected]
+        firsReferenceId:
+          type: string
+          nullable: true
+        message:
+          type: string
+        rejectionReasons:
+          type: array
+          items:
+            type: string
+          nullable: true
+        submittedAt:
+          type: string
+          format: date-time
+      required:
+        - success
+        - status
+        - message
+        - submittedAt

@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "Page transitions and smooth interactions"
+  "react-hook-form": "Complex form state management"
+  "@hookform/resolvers": "Zod validation integration"
+  "recharts": "Analytics and data visualization"
+  "date-fns": "Date formatting and manipulation"
+  "clsx": "Utility for constructing className conditionally"
+  "tailwind-merge": "Utility for merging tailwind classes"
+
+images:
+  - path: "artifacts/einvoice/public/images/auth-bg.png"
+    description: "Abstract geometric gradient mesh in deep navy, slate, and subtle cyan. Corporate, secure, government technology aesthetic. Soft light leaks, no text."
+    aspect_ratio: "16:9"
+  - path: "artifacts/einvoice/public/images/logo.png"
+    description: "Minimalist geometric crest logo for a financial technology tool, deep navy blue on transparent background, sharp precise lines."
+    aspect_ratio: "1:1"
+
+notes:
+  - API client hooks imported directly from @workspace/api-client-react
+  - Wrapped API hooks in local src/hooks for query cache invalidation management
+  - Zod schemas for forms defined locally to handle z.coerce formatting requirements

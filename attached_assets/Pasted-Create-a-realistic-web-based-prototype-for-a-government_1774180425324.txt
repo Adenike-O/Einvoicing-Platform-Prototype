@@ -1,0 +1,111 @@
+Create a realistic web-based prototype for a government-compliant e-invoicing platform used by businesses to submit invoices to a national tax authority.
+
+The product should simulate a system like Remita that validates and transmits invoices to a government API (FIRS).
+
+Target users:
+Finance teams and accountants in medium to large businesses who need to generate and submit compliant invoices.
+
+Core features to include:
+
+0. User Onboarding & Subscription Setup (NEW USERS)
+- First-time user onboarding flow:
+  - Sign up / login screen
+  - Business profile setup:
+    - Company name
+    - Tax Identification Number (TIN)
+    - Registered address
+    - Contact details
+- FIRS Integration Setup:
+  - Input FIRS credentials or API keys (simulate)
+  - Validate and “connect” to FIRS
+- Subscription simulation:
+  - Select a plan (Basic / Enterprise)
+  - Show activation success state
+- After setup, redirect user to dashboard
+
+- Returning user flow:
+  - Skip onboarding
+  - Land directly on dashboard with saved data pre-filled
+
+1. Customer Management System
+- Ability to:
+  - Add new customers (name, address, TIN)
+  - View saved customers
+- When creating invoices:
+  - Auto-fill customer details when selected
+- Simulate:
+  - “Fetching customer tax details” when TIN is entered
+  - Show loading state and auto-populate fields
+
+2. Invoice Creation Interface
+- Form to create an invoice with:
+  - Customer (select or add new)
+  - Invoice number
+  - Invoice date
+  - Line items (description, quantity, unit price)
+  - Automatic total calculation
+- Allow adding multiple line items dynamically
+
+3. Real-Time Validation Engine
+- Validate:
+  - Required fields
+  - Line item totals matching invoice total
+  - Tax calculation accuracy
+  - Presence of valid TIN (business + customer)
+- Show inline validation errors:
+  - Clear, human-readable messages (not technical)
+
+4. Submission Flow
+- “Submit to Tax Authority” button
+- Simulate API call to FIRS
+- Show loading state
+- Return either:
+  - Success confirmation (Invoice accepted with reference ID)
+  - Failure (with specific compliance error reasons)
+
+5. Error Handling Experience
+- Display rejection messages clearly
+- Map system errors to user-friendly explanations
+- Highlight problematic fields
+- Allow user to edit and resubmit
+
+6. Status Tracking Dashboard
+- List of submitted invoices
+- Status tags:
+  - Pending
+  - Accepted
+  - Rejected
+- Ability to click and view invoice details and error reasons
+
+7. Data Persistence Simulation
+- Saved:
+  - Business profile
+  - FIRS connection status
+  - Customers
+  - Previously submitted invoices
+- Returning users should see:
+  - Pre-filled data
+  - Existing invoice history
+
+Design requirements:
+- Clean, minimal, enterprise-style UI
+- Prioritize usability over aesthetics
+- Make it feel like a serious financial/compliance tool used in a regulated environment
+- Avoid flashy startup visuals
+
+Interaction requirements:
+- Fully clickable and navigable
+- Simulate realistic flow:
+  onboarding → setup → customer creation → invoice creation → validation → submission → response → tracking
+
+Tone:
+- Practical, structured, compliance-focused
+- Designed for real-world enterprise and government integration use
+
+Do NOT:
+- Add unnecessary features like analytics dashboards or AI suggestions
+- Over-design visuals
+- Make it look like a consumer app
+
+Goal:
+The prototype should clearly demonstrate how a product enforces compliance, reduces errors, supports onboarding of new users, and enables both new and returning users to efficiently submit validated invoices to a government system.
