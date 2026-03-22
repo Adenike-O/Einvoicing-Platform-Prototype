@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { useBusiness } from "@/hooks/use-business";
 import { motion, AnimatePresence } from "framer-motion";
-import { Building2, Key, CreditCard, CheckCircle2, ChevronRight } from "lucide-react";
+import { Building2, Key, CreditCard, CheckCircle2, ChevronRight, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function Onboarding() {
