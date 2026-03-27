@@ -125,6 +125,60 @@ router.get("/tin/:tin", requireAuth, async (req, res) => {
   res.json({ found: false, tin, name: null, address: null, registrationStatus: null });
 });
 
+router.put("/:id", requireAuth, async (req, res) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.status(400).json({ error: "Bad Request", message: "Invalid ID" });
+    return;
+  }
+
+  const updateSchema = z.object({
+    name: z.string().min(1).optional(),
+    tin: z.string().min(8).optional(),
+    email: z.string().email().optional().nullable(),
+    phone: z.string().optional().nullable(),
+    address: z.string().min(1).optional(),
+    city: z.string().optional().nullable(),
+    state: z.string().optional().nullable(),
+  });
+
+  const parsed = updateSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ error: "Bad Request", message: "Invalid data" });
+    return;
+  }
+
+  const [existing] = await db
+    .select()
+    .from(customersTable)
+    .where(and(eq(customersTable.id, id), eq(customersTable.userId, req.userId!)))
+    .limit(1);
+
+  if (!existing) {
+    res.status(404).json({ error: "Not Found", message: "Customer not found" });
+    return;
+  }
+
+  const [customer] = await db
+    .update(customersTable)
+    .set(parsed.data)
+    .where(eq(customersTable.id, id))
+    .returning();
+
+  res.json({
+    id: customer.id,
+    userId: customer.userId,
+    name: customer.name,
+    tin: customer.tin,
+    email: customer.email,
+    phone: customer.phone,
+    address: customer.address,
+    city: customer.city,
+    state: customer.state,
+    createdAt: customer.createdAt,
+  });
+});
+
 router.get("/:id", requireAuth, async (req, res) => {
   const id = parseInt(req.params.id);
   if (isNaN(id)) {

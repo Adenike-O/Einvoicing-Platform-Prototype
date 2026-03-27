@@ -272,11 +272,11 @@ router.post("/:id/validate", requireAuth, async (req, res) => {
       if (item.unitPrice < 0) {
         errors.push({ field: `lineItems[${idx}].unitPrice`, message: `Line item ${idx + 1}: Unit price cannot be negative.`, code: "NEGATIVE_PRICE" });
       }
-      const expectedAmt = parseFloat((item.quantity * item.unitPrice * (1 + item.vatRate / 100)).toFixed(2));
+      const expectedAmt = parseFloat((item.quantity * item.unitPrice).toFixed(2));
       if (Math.abs(parseFloat(item.amount) - expectedAmt) > 0.02) {
         errors.push({
           field: `lineItems[${idx}].amount`,
-          message: `Line item ${idx + 1}: Amount (₦${item.amount}) does not match calculated value (₦${expectedAmt.toFixed(2)}).`,
+          message: `Line item ${idx + 1}: Amount (₦${parseFloat(item.amount).toFixed(2)}) does not match calculated value (₦${expectedAmt.toFixed(2)}).`,
           code: "ITEM_AMOUNT_MISMATCH",
         });
       }
