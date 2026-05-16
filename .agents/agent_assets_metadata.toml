@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "7Net5x-_x1k4jgQjyqNJW"
+uri = "file://firs-einvoicing-platform.tar.gz"
+type = "unspecified"
+title = "FIRS E-Invoicing Platform — Source Code"
