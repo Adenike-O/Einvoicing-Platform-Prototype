@@ -6,3 +6,9 @@ id = "7Net5x-_x1k4jgQjyqNJW"
 uri = "file://firs-einvoicing-platform.tar.gz"
 type = "unspecified"
 title = "FIRS E-Invoicing Platform — Source Code"
+
+[[outputs]]
+id = "YL5JoP2VBmHR038Ii7TiI"
+uri = "file://firs-einvoicing-platform.zip"
+type = "unspecified"
+title = "FIRS E-Invoicing Platform — Source Code (.zip)"
