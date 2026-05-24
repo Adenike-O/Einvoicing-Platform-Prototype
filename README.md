@@ -1,13 +1,13 @@
 # Einvoicing-Platform-Prototype
-Repository for https://replit.com/@adeniketechmom/Government-Prototype
+This project simulates a compliance-focused invoicing platform that enables businesses create, validate, and submit invoices to a government tax authority system.
 
 Live Demo
 
 Prototype: https://government-prototype--adeniketechmom.replit.app
 
-Overview
 
-This project simulates a compliance-focused invoicing platform that enables businesses create, validate, and submit invoices to a government tax authority system.
+Overview
+Repository for https://replit.com/@adeniketechmom/Government-Prototype
 
 The prototype was created as part of a GovTech-focused product case study to demonstrate:
 
